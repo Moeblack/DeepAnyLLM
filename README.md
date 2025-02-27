@@ -1,4 +1,4 @@
-```html
+
 <div>
 <h1>DeepClaude 🐬🧠 - OpenAI Compatible（deepclaude & deepgemini）</h1>
 
@@ -275,4 +275,4 @@ Step 6. 配置程序到你的 Chatbox
 # Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=ErlichLiu/DeepClaude&type=Date)](https://star-history.com/#ErlichLiu/DeepClaude&Date)
-```
+
