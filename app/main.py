@@ -138,6 +138,7 @@ async def chat_completions(request: Request):
             if stream:
                 return StreamingResponse(
                     deep_claude.chat_completions_with_stream(
+                        request=request,  # Pass the request object
                         messages=messages,
                         model_arg=model_arg[:4],
                         deepseek_model=DEEPSEEK_MODEL,
@@ -157,6 +158,7 @@ async def chat_completions(request: Request):
             if stream:
                 return StreamingResponse(
                     openai_composite.chat_completions_with_stream(
+                        request=request,
                         messages=messages,
                         model_arg=model_arg[:4],
                         deepseek_model=DEEPSEEK_MODEL,

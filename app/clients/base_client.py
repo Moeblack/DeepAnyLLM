@@ -6,6 +6,8 @@ from typing import AsyncGenerator, Optional
 import aiohttp
 from aiohttp.client_exceptions import ClientError, ServerTimeoutError
 
+import asyncio
+
 from app.utils.logger import logger
 
 
@@ -37,56 +39,61 @@ class BaseClient(ABC):
         self.timeout = timeout or self.DEFAULT_TIMEOUT
 
     async def _make_request(
-        self, headers: dict, data: dict, timeout: Optional[aiohttp.ClientTimeout] = None
+        self, headers: dict, data: dict, timeout: Optional[aiohttp.ClientTimeout] = None,
+        cancel_event: Optional[asyncio.Event] = None
     ) -> AsyncGenerator[bytes, None]:
-        """发送请求并处理响应
+        """Send request and handle response with cancellation support
 
         Args:
-            headers: 请求头
-            data: 请求数据
-            timeout: 当前请求的超时设置,None则使用实例默认值
+            headers: Request headers
+            data: Request data
+            timeout: Current request timeout setting, None uses instance default
+            cancel_event: Event to signal cancellation
 
         Yields:
-            bytes: 原始响应数据
+            bytes: Raw response data
 
         Raises:
-            aiohttp.ClientError: 客户端错误
-            ServerTimeoutError: 服务器超时
-            Exception: 其他异常
+            aiohttp.ClientError: Client error
+            ServerTimeoutError: Server timeout
+            Exception: Other exceptions
         """
         request_timeout = timeout or self.timeout
 
         try:
-            # 使用 connector 参数来优化连接池
             connector = aiohttp.TCPConnector(limit=100, force_close=True)
             async with aiohttp.ClientSession(connector=connector) as session:
                 async with session.post(
                     self.api_url, headers=headers, json=data, timeout=request_timeout
                 ) as response:
-                    # 检查响应状态
+                    # Check response status
                     if not response.ok:
                         error_text = await response.text()
-                        error_msg = f"API 请求失败: 状态码 {response.status}, 错误信息: {error_text}"
+                        error_msg = f"API request failed: Status code {response.status}, Error: {error_text}"
                         logger.error(error_msg)
                         raise ClientError(error_msg)
 
-                    # 流式读取响应内容
+                    # Stream response content with cancellation check
                     async for chunk in response.content.iter_any():
-                        if chunk:  # 过滤空chunks
+                        if cancel_event and cancel_event.is_set():
+                            logger.info("Request cancelled, stopping stream")
+                            break
+                            
+                        if chunk:  # Filter empty chunks
                             yield chunk
 
         except ServerTimeoutError as e:
-            error_msg = f"请求超时: {str(e)}"
+            error_msg = f"Request timeout: {str(e)}"
             logger.error(error_msg)
             raise
 
         except ClientError as e:
-            error_msg = f"客户端错误: {str(e)}"
+            error_msg = f"Client error: {str(e)}"
             logger.error(error_msg)
             raise
 
         except Exception as e:
-            error_msg = f"请求处理异常: {str(e)}"
+            error_msg = f"Request processing exception: {str(e)}"
             logger.error(error_msg)
             raise
 

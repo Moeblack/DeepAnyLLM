@@ -4,6 +4,7 @@ import asyncio
 import json
 import time
 from typing import AsyncGenerator
+from fastapi import Request
 
 import tiktoken
 
@@ -35,56 +36,48 @@ class DeepClaude:
         )
         self.is_origin_reasoning = is_origin_reasoning
 
+
     async def chat_completions_with_stream(
         self,
+        request: Request,  # Add request parameter
         messages: list,
         model_arg: tuple[float, float, float, float],
         deepseek_model: str = "deepseek-reasoner",
         claude_model: str = "claude-3-5-sonnet-20241022",
     ) -> AsyncGenerator[bytes, None]:
-        """处理完整的流式输出过程
-
-        Args:
-            messages: 初始消息列表
-            model_arg: 模型参数
-            deepseek_model: DeepSeek 模型名称
-            claude_model: Claude 模型名称
-
-        Yields:
-            字节流数据，格式如下：
-            {
-                "id": "chatcmpl-xxx",
-                "object": "chat.completion.chunk",
-                "created": timestamp,
-                "model": model_name,
-                "choices": [{
-                    "index": 0,
-                    "delta": {
-                        "role": "assistant",
-                        "reasoning_content": reasoning_content,
-                        "content": content
-                    }
-                }]
-            }
-        """
-        # 生成唯一的会话ID和时间戳
+        # Generate unique session ID and timestamp
         chat_id = f"chatcmpl-{hex(int(time.time() * 1000))[2:]}"
         created_time = int(time.time())
 
-        # 创建队列，用于收集输出数据
+        # Create queues for output data and reasoning content
         output_queue = asyncio.Queue()
-        # 队列，用于传递 DeepSeek 推理内容给 Claude
         claude_queue = asyncio.Queue()
-
-        # 用于存储 DeepSeek 的推理累积内容
+        
+        # Store DeepSeek's reasoning content
         reasoning_content = []
-
+        
+        # Create a cancellation event
+        cancel_event = asyncio.Event()
+        
+        async def check_client_connection():
+            """Task to monitor client connection status"""
+            while not cancel_event.is_set():
+                if await request.is_disconnected():
+                    logger.info("Client disconnected, cancelling tasks")
+                    cancel_event.set()
+                    break
+                await asyncio.sleep(0.1)  # Check every 100ms
+        
         async def process_deepseek():
-            logger.info(f"开始处理 DeepSeek 流，使用模型：{deepseek_model}")
             try:
+                logger.info(f"Starting DeepSeek stream with model: {deepseek_model}")
                 async for content_type, content in self.deepseek_client.stream_chat(
                     messages, deepseek_model, self.is_origin_reasoning
                 ):
+                    if cancel_event.is_set():
+                        logger.info("Cancellation detected, stopping DeepSeek processing")
+                        break
+                        
                     if content_type == "reasoning":
                         reasoning_content.append(content)
                         response = {
@@ -107,18 +100,19 @@ class DeepClaude:
                             f"data: {json.dumps(response)}\n\n".encode("utf-8")
                         )
                     elif content_type == "content":
-                        # 当收到 content 类型时，将完整的推理内容发送到 claude_queue，并结束 DeepSeek 流处理
                         logger.info(
-                            f"DeepSeek 推理完成，收集到的推理内容长度：{len(''.join(reasoning_content))}"
+                            f"DeepSeek reasoning complete, collected reasoning length: {len(''.join(reasoning_content))}"
                         )
                         await claude_queue.put("".join(reasoning_content))
                         break
             except Exception as e:
-                logger.error(f"处理 DeepSeek 流时发生错误: {e}")
+                logger.error(f"Error processing DeepSeek stream: {e}")
                 await claude_queue.put("")
-            # 用 None 标记 DeepSeek 任务结束
-            logger.info("DeepSeek 任务处理完成，标记结束")
-            await output_queue.put(None)
+            finally:
+                # Mark DeepSeek task as done
+                if not cancel_event.is_set():
+                    logger.info("DeepSeek task complete, marking end")
+                    await output_queue.put(None)
 
         async def process_claude():
             try:
@@ -171,13 +165,17 @@ class DeepClaude:
                 system_content = system_content.strip() if system_content else None
                 if system_content:
                     logger.debug(f"使用系统提示: {system_content[:100]}...")
-
+                
                 async for content_type, content in self.claude_client.stream_chat(
                     messages=claude_messages,
                     model_arg=model_arg,
                     model=claude_model,
                     system_prompt=system_content
                 ):
+                    if cancel_event.is_set():
+                        logger.info("Cancellation detected, stopping Claude output")
+                        break
+                        
                     if content_type == "answer":
                         response = {
                             "id": chat_id,
@@ -195,26 +193,54 @@ class DeepClaude:
                             f"data: {json.dumps(response)}\n\n".encode("utf-8")
                         )
             except Exception as e:
-                logger.error(f"处理 Claude 流时发生错误: {e}")
-            # 用 None 标记 Claude 任务结束
-            logger.info("Claude 任务处理完成，标记结束")
-            await output_queue.put(None)
+                logger.error(f"Error processing Claude stream: {e}")
+            finally:
+                # Mark Claude task as done
+                if not cancel_event.is_set():
+                    logger.info("Claude task complete, marking end")
+                    await output_queue.put(None)
 
-        # 创建并发任务
-        asyncio.create_task(process_deepseek())
-        asyncio.create_task(process_claude())
-
-        # 等待两个任务完成，通过计数判断
-        finished_tasks = 0
-        while finished_tasks < 2:
-            item = await output_queue.get()
-            if item is None:
-                finished_tasks += 1
-            else:
-                yield item
-
-        # 发送结束标记
-        yield b"data: [DONE]\n\n"
+        # Create and start tasks
+        connection_task = asyncio.create_task(check_client_connection())
+        deepseek_task = asyncio.create_task(process_deepseek())
+        claude_task = asyncio.create_task(process_claude())
+        
+        tasks = [deepseek_task, claude_task, connection_task]
+        
+        try:
+            # Wait for tasks to complete or client to disconnect
+            finished_tasks = 0
+            while finished_tasks < 2 and not cancel_event.is_set():
+                try:
+                    item = await asyncio.wait_for(output_queue.get(), timeout=0.5)
+                    if item is None:
+                        finished_tasks += 1
+                    else:
+                        yield item
+                except asyncio.TimeoutError:
+                    # Check if client disconnected during wait
+                    if cancel_event.is_set():
+                        logger.info("Client disconnected during wait, breaking loop")
+                        break
+                    continue
+                
+            # Send end marker if not cancelled
+            if not cancel_event.is_set():
+                yield b"data: [DONE]\n\n"
+                
+        except GeneratorExit:
+            # This exception is raised when the client closes the connection
+            logger.info("GeneratorExit caught, client closed connection")
+            cancel_event.set()
+        finally:
+            # Clean up tasks
+            for task in tasks:
+                if not task.done():
+                    task.cancel()
+                    
+            # Wait for tasks to be properly cancelled
+            await asyncio.gather(*tasks, return_exceptions=True)
+            logger.info("All tasks cleaned up")
 
     async def chat_completions_without_stream(
         self,
