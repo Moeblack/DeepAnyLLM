@@ -1,3 +1,4 @@
+```html
 <div>
 <h1>DeepClaude 🐬🧠 - OpenAI Compatible（deepclaude & deepgemini）</h1>
 
@@ -11,22 +12,8 @@
 <div>
 <h4 style="color: #FF9909"> 特别说明：
 <br />
-1.编程：推荐 DeepSeek r1 + Claude 3.5 Sonnet 组合，效果最好；
-2.内容创作：推荐 DeepSeek r1 + Gemini 2.0 Flash 或 Gemini 2.0 Pro 组合，效果最好，并且可以完全免费使用。
-<br />
-对于不太会部署，只是希望使用上最强组合模型的朋友，可以直接访问 Erlich 个人网站自助购买按量付费的 API：https://erlich.fun/deepclaude-pricing
-也可以直接联系 Erlich（微信号：erlichliu1）</h4>
+</h4>
 </div>
-
-<details>
-<summary><strong> 赞助商：问小白 https://www.wenxiaobai.com （丝滑使用 DeepSeek r1 满血版， 支持联网、上传文件、图片、AI 创作 PPT 等）</strong></summary>
-<div>
-<img src="https://img.erlich.fun/personal-blog/uPic/vVXyGq.png" />
-<img src="https://img.erlich.fun/personal-blog/uPic/SIU8qx.png" />
-</div>
-</details>
-
----
 
 <details>
 <summary><strong>更新日志：</strong></summary> 
@@ -64,25 +51,21 @@
 </div>
 </details>
 
-# 简介
+---
+
+<details>
+<summary><strong>简介</strong></summary>
 最近 DeepSeek 推出了 [DeepSeek R1 模型](https://platform.deepseek.com)，在推理能力上已经达到了第一梯队。但是 DeepSeek R1 在一些日常任务的输出上可能仍然无法匹敌 Claude 3.5 Sonnet。Aider 团队最近有一篇研究，表示通过[采用 DeepSeek R1 + Claude 3.5 Sonnet 可以实现最好的效果](https://aider.chat/2025/01/24/r1-sonnet.html)。
 
 <img src="https://img.erlich.fun/personal-blog/uPic/heiQYX.png" alt="deepseek r1 and sonnet benchmark" style="width=400px;"/>
 
 > **R1 as architect with Sonnet as editor has set a new SOTA of 64.0%** on the [aider polyglot benchmark](https://aider.chat/2024/12/21/polyglot.html). They achieve this at **14X less cost** compared to the previous o1 SOTA result.
 
-本项目受到该项目的启发，通过 fastAPI 完全重写，经过 15 天大量社区用户的真实测试，我们创作了一些新的组合使用方案。
-
-**1.编程：推荐使用 deepclaude = deepseek r1 + claude 3.5 sonnet;
-2.内容创作：推荐使用 deepgeminipro = deepseek r1 + gemini 2.0 pro (该方案可以完全免费使用);
-3.日常实验：推荐 deepgeminiflash = deepseek r1 + gemini 2.0 flash (该方案可以完全免费使用)。**
+本项目受到该项目的启发，通过 fastAPI 完全重写.
 
 项目**支持 OpenAI 兼容格式的输入输出**，支持 DeepSeek 官方 API 以及第三方托管的 API、生成部分也支持 Claude 官方 API 以及中转 API，并对 OpenAI 兼容格式的其他 Model 做了特别支持。
 
-**🔥推荐使用方法：**
-1.用户可以自行运行在自己的服务器，并对外提供开放 API 接口，接入 [OneAPI](https://github.com/songquanpeng/one-api) 等实现统一分发。
-
-2.接入你的日常大语言模型对话聊天使用。
+</details>
 
 # Implementation
 
@@ -94,9 +77,9 @@
 
 ## 1. 获得运行所需的 API
 
-1. 获取 DeepSeek API，因为最近 DeepSeek 官方的供应能里不足，所以经常无法使用，不推荐。目前更推荐使用派欧算力云的 DeepSeek r1，因为我们对思维链的准确性要求很高，派欧算力云的准确性是目前最好的。并且赠送的额度也是最多的，通过我的邀请码注册可以获得 50 元，可以点击链接注册：https://ppinfra.com/user/register?invited_by=TXTPQF 或者扫码注册：![派欧算力云邀请链接](https://img.erlich.fun/personal-blog/uPic/ppinfra-invite-poster.png)
-2. 获取 Claude 的 API KEY：https://console.anthropic.com。(也可采用其他中转服务，如 Openrouter 以及其他服务商的 API KEY)
-3. 获取 Gemini 的 API KEY：https://aistudio.google.com/apikey (有免费的额度，日常够用)
+1.  获取 DeepSeek API：https://platform.deepseek.com
+2.  获取 Claude 的 API KEY：https://console.anthropic.com。(也可采用其他中转服务，如 Openrouter 以及其他服务商的 API KEY)
+3.  获取 Gemini 的 API KEY：https://aistudio.google.com/apikey (有免费的额度，日常够用)
 
 ## 2. 开始运行（本地运行）
 
@@ -156,7 +139,7 @@ uvicorn app.main:app
 uvicorn app.main:app --host 0.0.0.0 --port 8080
 ```
 
-Step 6. 配置程序到你的 Chatbox（推荐 [Cherry Studio](https://cherry-ai.com) [NextChat](https://nextchat.dev/)、[ChatBox](https://chatboxai.app/zh)、[LobeChat](https://lobechat.com/)）
+Step 6. 配置程序到你的 Chatbox
 
 ```bash
 # 如果你的客户端是 Cherry Studio、Chatbox（OpenAI API 模式，注意不是 OpenAI 兼容模式）
@@ -177,14 +160,14 @@ Step 6. 配置程序到你的 Chatbox（推荐 [Cherry Studio](https://cherry-ai
 
 > 项目支持 Docker 服务器部署，可自行调用接入常用的 Chatbox，也可以作为渠道一直，将其视为一个特殊的 `DeepClaude`模型接入到 [OneAPI](https://github.com/songquanpeng/one-api) 等产品使用。
 
-## Railway 一键部署（推荐）
+## Railway 一键部署
 <details>
 <summary><strong>一键部署到 Railway</strong></summary> 
 
 <div>
 1. 首先 fork 一份代码。
 
-2. 点击打开 Railway 主页：https://railway.com?referralCode=RNTGCA
+2. 点击打开 Railway 主页：https://railway.com
    
 3. 点击 `Deploy a new project`
 ![image-20250209164454358](https://img.erlich.fun/personal-blog/uPic/image-20250209164454358.png)
@@ -195,7 +178,7 @@ Step 6. 配置程序到你的 Chatbox（推荐 [Cherry Studio](https://cherry-ai
 5. 点击 `Login with GitHub`
 ![image-20250209164843566](https://img.erlich.fun/personal-blog/uPic/image-20250209164843566.png)
 
-6. 选择升级，选择只需 5 美金的 Hobby Plan 即可 
+6. 选择升级，选择只需 5 美金的 Hobby Plan 即可
 ![image-20250209165034070](https://img.erlich.fun/personal-blog/uPic/image-20250209165034070.png)
 ![image-20250209165108355](https://img.erlich.fun/personal-blog/uPic/image-20250209165108355.png)
 
@@ -280,7 +263,7 @@ Step 6. 配置程序到你的 Chatbox（推荐 [Cherry Studio](https://cherry-ai
 
    请替换上述命令中的 `your_allow_api_key`，`your_allow_origins`，`your_deepseek_api_key` 和 `your_claude_api_key` 为你实际的 API 密钥和配置。`ALLOW_ORIGINS` 请设置为允许访问的域名，如 `"http://localhost:3000,https://chat.example.com"` 或 `"*"` 表示允许所有来源。
 
-   # Automatic fork sync
+# Automatic fork sync
 项目已经支持 Github Actions 自动更新 fork 项目的代码，保持你的 fork 版本与当前 main 分支保持一致。如需开启，请 frok 后在 Settings 中开启 Actions 权限即可。
 
 
@@ -292,10 +275,4 @@ Step 6. 配置程序到你的 Chatbox（推荐 [Cherry Studio](https://cherry-ai
 # Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=ErlichLiu/DeepClaude&type=Date)](https://star-history.com/#ErlichLiu/DeepClaude&Date)
-
-# Buy me a coffee
-<img src="https://img.erlich.fun/personal-blog/uPic/IMG_3625.JPG" alt="微信赞赏码" style="width: 400px;"/>
-
-# About Me
-- Email: erlichliu@gmail.com
-- Website: [Erlichliu](https://erlich.fun)
+```
