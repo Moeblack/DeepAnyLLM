@@ -1,4 +1,3 @@
-
 <div>
 <h1>DeepClaude 🐬🧠 - OpenAI Compatible（deepclaude & deepgemini）</h1>
 
@@ -125,6 +124,7 @@ CLAUDE_API_URL=请求 Claude 3.5 Sonnet 所需的请求地址，根据你的供�
 # 使用非deepclaude模型的时候可以传入任意openai兼容格式的模型名, 会自动附加上deepseek-R1思维链
 OPENAI_COMPOSITE_API_KEY=your_api_key
 OPENAI_COMPOSITE_API_URL=your_openai_baseurl
+# 已弃用 OPENAI_COMPOSITE_MODEL 字段，模型名称将直接使用请求中传入的名称。
 
 ```
 
@@ -255,13 +255,13 @@ Step 6. 配置程序到你的 Chatbox
        -e CLAUDE_API_URL=https://api.anthropic.com/v1/messages \
        -e OPENAI_COMPOSITE_API_KEY=your_gemini_api_key
        -e OPENAI_COMPOSITE_API_URL=https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
-       -e OPENAI_COMPOSITE_MODEL=gemini-2.0-flash
        -e LOG_LEVEL=INFO \
        --restart always \
        deepclaude:latest
    ```
 
    请替换上述命令中的 `your_allow_api_key`，`your_allow_origins`，`your_deepseek_api_key` 和 `your_claude_api_key` 为你实际的 API 密钥和配置。`ALLOW_ORIGINS` 请设置为允许访问的域名，如 `"http://localhost:3000,https://chat.example.com"` 或 `"*"` 表示允许所有来源。
+   **注意：已弃用 `OPENAI_COMPOSITE_MODEL` 环境变量。模型名称将直接使用请求中传入的 OpenAI 兼容模型名称。**
 
 # Automatic fork sync
 项目已经支持 Github Actions 自动更新 fork 项目的代码，保持你的 fork 版本与当前 main 分支保持一致。如需开启，请 frok 后在 Settings 中开启 Actions 权限即可。
@@ -275,4 +275,3 @@ Step 6. 配置程序到你的 Chatbox
 # Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=ErlichLiu/DeepClaude&type=Date)](https://star-history.com/#ErlichLiu/DeepClaude&Date)
-
