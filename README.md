@@ -1,5 +1,5 @@
 <div>
-<h1>DeepAnyLLM 🐬🧠 - OpenAI Compatible（deepclaude & deepgemini）</h1>
+<h1>DeepAnyLLM 👨‍🦽🤩</h1>
 
 <a href="https://github.com/getasterisk/deepclaude"> Inspiration from getasterisk/deepclaude</a>
 
@@ -12,7 +12,7 @@
 </div>
 
 <div>
-<h4 style="color: #FF9909"> 特别说明：本项目完全基于ErlichLiu/deepclaude的低创作品，目的仅为了方便自己使用各种不同的LLM搭配R1思维链使用
+<h4 style="color: #FF9909"> 特别说明：本项目完全基于[ErlichLiu/deepclaude](https://github.com/ErlichLiu/DeepClaude)的低创作品，目的仅为了方便自己使用各种不同的LLM搭配R1思维链使用
 <br />
 </h4>
 </div>
@@ -90,8 +90,8 @@
 Step 1. 克隆本项目到适合的文件夹并进入项目
 
 ```bash
-git clone https://github.com/ErlichLiu/DeepClaude.git
-cd DeepClaude
+git clone https://github.com/Moeblack/DeepAnyLLM.git
+cd DeepAnyLLM
 ```
 
 Step 2. 通过 uv 安装依赖（如果你还没有安装 uv，请看下方注解）
@@ -150,12 +150,10 @@ Step 6. 配置程序到你的 Chatbox
 # 如果你的客户端是 Cherry Studio、Chatbox（OpenAI API 模式，注意不是 OpenAI 兼容模式）
 # API 地址为 http://127.0.0.1:8000
 # API 密钥为你在 ENV 环境变量内设置的 ALLOW_API_KEY
-# 需要手动配置两个模型，模型名为 deepclaude 和 deepgemini
 
 # 如果你的客户端是 LobeChat
 # API 地址为：http://127.0.0.1:8000/v1
 # API 密钥为你在 ENV 环境变量内设置的 ALLOW_API_KEY
-# 支持获取模型列表，可以同时获取到 deepclaude 模型和 deepgemini 模型
 
 ```
 
@@ -164,72 +162,6 @@ Step 6. 配置程序到你的 Chatbox
 # 部署到服务器
 
 > 项目支持 Docker 服务器部署，可自行调用接入常用的 Chatbox，也可以作为渠道一直，将其视为一个特殊的 `DeepClaude`模型接入到 [OneAPI](https://github.com/songquanpeng/one-api) 等产品使用。
-
-## Railway 一键部署
-<details>
-<summary><strong>一键部署到 Railway</strong></summary> 
-
-<div>
-1. 首先 fork 一份代码。
-
-2. 点击打开 Railway 主页：https://railway.com
-   
-3. 点击 `Deploy a new project`
-![image-20250209164454358](https://img.erlich.fun/personal-blog/uPic/image-20250209164454358.png)
-
-4. 点击 `Deploy from GitHub repo`
-![image-20250209164638713](https://img.erlich.fun/personal-blog/uPic/image-20250209164638713.png)
-
-5. 点击 `Login with GitHub`
-![image-20250209164843566](https://img.erlich.fun/personal-blog/uPic/image-20250209164843566.png)
-
-6. 选择升级，选择只需 5 美金的 Hobby Plan 即可
-![image-20250209165034070](https://img.erlich.fun/personal-blog/uPic/image-20250209165034070.png)
-![image-20250209165108355](https://img.erlich.fun/personal-blog/uPic/image-20250209165108355.png)
-
-1. 点击 `Create a New Project`
-![create-a-new-project](https://img.erlich.fun/personal-blog/uPic/rvfGTE.png)
-
-1. 继续选择 `Deploy from GitHub repo`
-![image-20250209164638713](https://img.erlich.fun/personal-blog/uPic/image-20250209164638713.png)
-
-1. 输入框内搜索`DeepClaude`，选中后点击。
-![deploy-from-github-repo](https://img.erlich.fun/personal-blog/uPic/ihOzXU.png)
-
-1.  选择`Variable`，并点击`New Variable` 按钮，按照环境变量内的键值对进行填写
-![variable](https://img.erlich.fun/personal-blog/uPic/VrZgxp.png)
-
-1.  填写完成后重新点击 `Deploy` 按钮，等待数秒后即可完成部署
-![deploy](https://img.erlich.fun/personal-blog/uPic/5kvkLI.png)
-
-1.  部署完成后，点击 `Settings` 按钮，然后向下查看到 `Networking` 区域，然后选择 `Generate Domain`，并输入 `8000` 作为端口号
-![networking](https://img.erlich.fun/personal-blog/uPic/PQyAtG.png)
-![generate-domain](https://img.erlich.fun/personal-blog/uPic/i5JnX8.png)
-![port](https://img.erlich.fun/personal-blog/uPic/ZEwxRm.png)
-
-1.  接下来就可以在你喜欢的 Chatbox 内配置使用或作为 API 使用了
-![using](https://img.erlich.fun/personal-blog/uPic/hD8V6e.png)
-
-注：模型名称为 deepclaude 和 deepgemini
-
-</div>
-</details>
-
-## 使用 docker-compose 部署（Docker 镜像将随着 main 分支自动更新到最新）
-
-   推荐可以使用 `docker-compose.yml` 文件进行部署，更加方便快捷。
-
-   1. 确保已安装 Docker Compose。
-   2. 复制 `docker-compose.yml` 文件到项目根目录。
-   3. 修改 `docker-compose.yml` 文件中的环境变量配置，将 `your_allow_api_key`，`your_allow_origins`，`your_deepseek_api_key` 和 `your_claude_api_key` 等值替换为你的实际配置。
-   4. 在项目根目录下运行 Docker Compose 命令启动服务：
-
-      ```bash
-      docker-compose up -d
-      ```
-
-   服务启动后，DeepClaude API 将在 `http://宿主机IP:8000/v1/chat/completions` 上进行访问。
-   5. 模型名称为 deepclaude 和 deepgemini
 
 ## Docker 部署（自行 Build）
 
@@ -262,7 +194,7 @@ Step 6. 配置程序到你的 Chatbox
        -e OPENAI_COMPOSITE_API_URL=https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
        -e LOG_LEVEL=INFO \
        --restart always \
-       deepclaude:latest
+       DeepAnyLLM:latest
    ```
 
    请替换上述命令中的 `your_allow_api_key`，`your_allow_origins`，`your_deepseek_api_key` 和 `your_claude_api_key` 为你实际的 API 密钥和配置。`ALLOW_ORIGINS` 请设置为允许访问的域名，如 `"http://localhost:3000,https://chat.example.com"` 或 `"*"` 表示允许所有来源。
@@ -276,7 +208,3 @@ Step 6. 配置程序到你的 Chatbox
 - [FastAPI](https://fastapi.tiangolo.com/)
 - [UV as package manager](https://docs.astral.sh/uv/#project-management)
 - [Docker](https://www.docker.com/)
-
-# Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=ErlichLiu/DeepClaude&type=Date)](https://star-history.com/#ErlichLiu/DeepClaude&Date)
