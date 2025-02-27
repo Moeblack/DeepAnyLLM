@@ -160,7 +160,7 @@ async def chat_completions(request: Request):
                         messages=messages,
                         model_arg=model_arg[:4],
                         deepseek_model=DEEPSEEK_MODEL,
-                        target_model=OPENAI_COMPOSITE_MODEL,
+                        target_model=model,
                     ),
                     media_type="text/event-stream",
                 )
@@ -169,7 +169,7 @@ async def chat_completions(request: Request):
                     messages=messages,
                     model_arg=model_arg[:4],
                     deepseek_model=DEEPSEEK_MODEL,
-                    target_model=OPENAI_COMPOSITE_MODEL,
+                    target_model=model,
                 )
 
     except Exception as e:
