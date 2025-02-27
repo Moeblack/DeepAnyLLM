@@ -1,7 +1,9 @@
 <div>
-<h1>DeepClaude 🐬🧠 - OpenAI Compatible（deepclaude & deepgemini）</h1>
+<h1>DeepAnyLLM 🐬🧠 - OpenAI Compatible（deepclaude & deepgemini）</h1>
 
 <a href="https://github.com/getasterisk/deepclaude"> Inspiration from getasterisk/deepclaude</a>
+<a href="https://github.com/ErlichLiu/DeepClaude"> Edit on ErlichLiu/deepclaude</a>
+
 
 [![GitHub license](https://img.erlich.fun/personal-blog/uPic/deepclaude.svg)](#)
 [![Compatible with](https://img.shields.io/badge/-ChatGPT-412991?style=flat-square&logo=openai&logoColor=FFFFFF)](https://openai.com)
@@ -9,7 +11,7 @@
 </div>
 
 <div>
-<h4 style="color: #FF9909"> 特别说明：
+<h4 style="color: #FF9909"> 特别说明：本项目完全基于ErlichLiu/deepclaude的低创作品，目的仅为了方便自己使用各种不同的LLM搭配R1思维链使用
 <br />
 </h4>
 </div>
@@ -17,6 +19,8 @@
 <details>
 <summary><strong>更新日志：</strong></summary> 
 <div>
+2025-02-27.1: 弃用`OPENAI_COMPOSITE_MODEL`环境变量
+
 2025-02-25.1: 添加 system message 对于 Claude 3.5 Sonnet 的支持
 
 2025-02-23.1: 重构代码，支持 OpenAI 兼容模型，deepgeminiflash 和 deepgeminipro 配置更方便（请详细查看 READEME 和 .env.example 内的说明）。
