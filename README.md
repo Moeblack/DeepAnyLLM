@@ -138,9 +138,10 @@ CLAUDE_MODEL=Claude 3.5 Sonnet 的模型名称，不同供应商的名称不同�
 CLAUDE_PROVIDER=支持 anthropic (官方) 以及 oneapi（其他中转服务商）两种模式，根据你的供应商填写
 CLAUDE_API_URL=请求 Claude 3.5 Sonnet 所需的请求地址，根据你的供应商说明进行填写
 
-OPENAI_COMPOSITE_API_KEY=通常推荐配置为 Gemini 的 API 密钥，可在👆上面步骤 1 处获取
-OPENAI_COMPOSITE_API_URL=请求 Gemini 所需的请求地址，默认地址为 https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
-OPENAI_COMPOSITE_MODEL=通常推荐配置为 Gemini 的模型名称，可配置为 gemini-2.0-flash 或 gemini-2.0-pro-exp（pro 版本当前为实验模型）
+# OPENAI兼容模型
+# 使用非deepclaude模型的时候可以传入任意openai兼容格式的模型名, 会自动附加上deepseek-R1思维链
+OPENAI_COMPOSITE_API_KEY=your_api_key
+OPENAI_COMPOSITE_API_URL=your_openai_baseurl
 
 ```
 
@@ -148,6 +149,11 @@ Step 5. 通过命令行启动
 ```bash
 # 本地运行
 uvicorn app.main:app
+```
+---
+如果公开到局域网或自定义端口号
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8080
 ```
 
 Step 6. 配置程序到你的 Chatbox（推荐 [Cherry Studio](https://cherry-ai.com) [NextChat](https://nextchat.dev/)、[ChatBox](https://chatboxai.app/zh)、[LobeChat](https://lobechat.com/)）
