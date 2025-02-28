@@ -236,6 +236,7 @@ class OpenAICompatibleComposite:
 
     async def chat_completions_without_stream(
         self,
+        request: Request,
         messages: List[Dict[str, str]],
         model_arg: tuple[float, float, float, float],
         deepseek_model: str = "deepseek-reasoner",
@@ -263,7 +264,7 @@ class OpenAICompatibleComposite:
 
         content_parts = []
         async for chunk in self.chat_completions_with_stream(
-            messages, model_arg, deepseek_model, target_model
+            request, messages, model_arg, deepseek_model, target_model
         ):
             if chunk != b"data: [DONE]\n\n":
                 try:

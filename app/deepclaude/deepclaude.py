@@ -244,6 +244,7 @@ class DeepClaude:
 
     async def chat_completions_without_stream(
         self,
+        request: Request,
         messages: list,
         model_arg: tuple[float, float, float, float],
         deepseek_model: str = "deepseek-reasoner",
@@ -267,7 +268,7 @@ class DeepClaude:
         # 1. 获取 DeepSeek 的推理内容（仍然使用流式）
         try:
             async for content_type, content in self.deepseek_client.stream_chat(
-                messages, deepseek_model, self.is_origin_reasoning
+                request, messages, deepseek_model, self.is_origin_reasoning
             ):
                 if content_type == "reasoning":
                     reasoning_content.append(content)
