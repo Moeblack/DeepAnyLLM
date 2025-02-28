@@ -148,6 +148,7 @@ async def chat_completions(request: Request):
                 )
             else:
                 return await deep_claude.chat_completions_without_stream(
+                    request=request,
                     messages=messages,
                     model_arg=model_arg[:4],
                     deepseek_model=DEEPSEEK_MODEL,
@@ -168,6 +169,7 @@ async def chat_completions(request: Request):
                 )
             else:
                 return await openai_composite.chat_completions_without_stream(
+                    request=request,
                     messages=messages,
                     model_arg=model_arg[:4],
                     deepseek_model=DEEPSEEK_MODEL,
