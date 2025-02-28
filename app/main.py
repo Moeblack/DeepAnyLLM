@@ -188,7 +188,7 @@ def get_and_validate_params(body):
     top_p: float = body.get("top_p", 0.9)
     presence_penalty: float = body.get("presence_penalty", 0.0)
     frequency_penalty: float = body.get("frequency_penalty", 0.0)
-    stream: bool = body.get("stream", True)
+    stream: bool = body.get("stream", False)
 
     if "sonnet" in body.get(
         "model", ""
